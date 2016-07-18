@@ -26,6 +26,8 @@ namespace WebDeveloper
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css")
                       .Include("~/Css/site.css"));
+
+
         }
     }
 }
