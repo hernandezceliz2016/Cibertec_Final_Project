@@ -8,13 +8,13 @@ using WebDeveloper.Model.DTO;
 
 namespace WebDeveloper.DataAccess
 {
-    public class PersonRepository : BaseDataAccess<Person>
+    public class PersonalRepository : BaseDataAccess<Person>
     {
         public IEnumerable<PersonModelView> GetListDto()
         {
             using (var dbContext = new WebContextDb())
             {
-                return Automapper.GetGeneric<IEnumerable<Person>,List<PersonModelView>>(dbContext.Person.ToList().Take(10));
+                return Automapper.GetGeneric<IEnumerable<Person>,List<PersonModelView>>(dbContext.Person.ToList().OrderByDescending(x=>x.ModifiedDate).Take(10));
             }
         }
 
