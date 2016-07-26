@@ -21,20 +21,21 @@ namespace WebDeveloper.DataAccess
 
         private static MapperConfiguration SetAutomapperConfig()
         {
-            lock (padlock)
+            lock (padlock)//
             {
                 return _config ?? new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<Person, PersonModelView>();
+                    cfg.CreateMap<Address, AddressModelView>();//mapeo de objetos
                 });
             }
         }
 
 
-        public static IEnumerable<R> GetGeneric<T, R>(IEnumerable<T> claimList)
+        public static IEnumerable<R> GetGeneric<T, R>(IEnumerable<T> objectList)
         {
             var mapper = _config.CreateMapper();
-            return mapper.Map<IEnumerable<T>, List<R>>(claimList);
+            return mapper.Map<IEnumerable<T>, List<R>>(objectList);
         }
 
         public static R GetGeneric<T, R>(T keyDocumentParent)

@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebDeveloper.DataAccess;
 using WebDeveloper.Model;
-using WebDeveloper.Models;
+
 
 namespace WebDeveloper.Areas.Personal.Controllers
 {
     [Authorize]
     public class PersonalController : Controller
     {
-        private readonly PersonalRepository _personRepository;
-        public PersonalController(PersonalRepository personRepository)
+        private readonly PersonRepository _personRepository;
+        public PersonalController(PersonRepository personRepository)
         {
             _personRepository = personRepository;
         }
-
+        [OutputCache(Duration = 0)]
         public ActionResult Index()
         {
             return View(_personRepository.GetListDto());
@@ -26,8 +27,8 @@ namespace WebDeveloper.Areas.Personal.Controllers
 
         public PartialViewResult EmailList(int? id)
         {
-            if(!id.HasValue) return null;
-            return PartialView("_EmailList",_personRepository.EmailList(id.Value));
+            if (!id.HasValue) return null;
+            return PartialView("_EmailList", _personRepository.EmailList(id.Value));
         }
 
         public PartialViewResult Create()
@@ -47,7 +48,44 @@ namespace WebDeveloper.Areas.Personal.Controllers
                 ModifiedDate = person.ModifiedDate
             };
             _personRepository.Add(person);
-            return RedirectToAction("Index");
+            return new HttpStatusCodeResult(HttpStatusCode.OK); //RedirectToAction("Index");
+        }
+
+        [OutputCache(Duration = 0)]
+        public ActionResult Edit(int id)
+        {
+            var person = _personRepository.GetById(id);
+            if (person == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            return PartialView("_Edit", person);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [OutputCache(Duration = 0)]
+        public ActionResult Edit(Person person)
+        {
+            if (!ModelState.IsValid) return PartialView("_Edit", person);
+            _personRepository.Update(person);
+            return RedirectToRoute("Personal_default");
+        }
+
+        [OutputCache(Duration = 0)]
+        public ActionResult Delete(int id)
+        {
+            var person = _personRepository.GetById(id);
+            if (person == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            return PartialView("_Delete", person);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [OutputCache(Duration = 0)]
+        public ActionResult Delete(Person person)
+        {
+            if (_personRepository.Delete(person) > 0)
+                return RedirectToRoute("Personal_default");
+            return PartialView("_Delete", person);
         }
     }
 }

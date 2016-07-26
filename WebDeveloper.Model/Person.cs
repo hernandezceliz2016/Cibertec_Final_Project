@@ -19,45 +19,34 @@ namespace WebDeveloper.Model
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int BusinessEntityID { get; set; }
 
-        [Display(Name = "Person Type")]
-        [Required(ErrorMessage = "This field is required")]
-        [StringLength(2, ErrorMessage = "Length 2")]
+        [Required]
+        [StringLength(2)]
         public string PersonType { get; set; }
 
-        [Display(Name="Name Style")]
         public bool NameStyle { get; set; }
 
-        [Display(Name="Title")]
-        [StringLength(8, ErrorMessage="Length 8")]
+        [StringLength(8)]
         public string Title { get; set; }
 
-        [Display(Name="First Name")]
-        [Required(ErrorMessage = "This field is required")]
-        [StringLength(50, ErrorMessage="Length 50")]
+        [Required]
+        [StringLength(50)]
         public string FirstName { get; set; }
 
-        [Display(Name="Middle Name")]
-        [StringLength(50, ErrorMessage = "Length 50")]
+        [StringLength(50)]
         public string MiddleName { get; set; }
 
-        [Display(Name="Last Name")]
-        [Required(ErrorMessage = "This field is required")]
-        [StringLength(50, ErrorMessage = "Length 50")]
+        [Required]
+        [StringLength(50)]
         public string LastName { get; set; }
 
-        [Display(Name = "Modified Date")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime ModifiedDate { get; set; }
 
 
-        [StringLength(10, ErrorMessage="Length 10")]
+        [StringLength(10)]
         public string Suffix { get; set; }
 
-        [Display(Name="Email Promotion")]
         public int EmailPromotion { get; set; }
 
-        [Display(Name="Additional Contact Info")]
         [Column(TypeName = "xml")]
         public string AdditionalContactInfo { get; set; }
 
@@ -65,10 +54,10 @@ namespace WebDeveloper.Model
         public string Demographics { get; set; }
 
         public Guid rowguid { get; set; }
-
+        
 
         public virtual BusinessEntity BusinessEntity { get; set; }
-
+        
         public virtual ICollection<BusinessEntityContact> BusinessEntityContact { get; set; }
 
         public virtual ICollection<EmailAddress> EmailAddress { get; set; }
