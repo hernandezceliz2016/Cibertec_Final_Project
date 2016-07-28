@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -22,7 +23,20 @@ namespace WebDeveloper.Areas.Personal.Controllers
         [OutputCache(Duration = 0)]
         public ActionResult Index()
         {
+            ViewBag.Count = TotalPages(10);
             return View(_personRepository.GetListDto());
+        }
+
+        [OutputCache(Duration = 0)]
+        public ActionResult List(int? page, int? size)
+        {
+            if (!page.HasValue || !size.HasValue)
+            {
+                page = 1;
+                size = 10;
+            }
+            return PartialView("_List", _personRepository.GetListDto().Page(page.Value, size.Value));
+            //return View(_personRepository.GetListDto().Page(page.Value, size.Value));
         }
 
         public PartialViewResult EmailList(int? id)
@@ -30,7 +44,7 @@ namespace WebDeveloper.Areas.Personal.Controllers
             if (!id.HasValue) return null;
             return PartialView("_EmailList", _personRepository.EmailList(id.Value));
         }
-
+        
         public PartialViewResult Create()
         {
             return PartialView("_Create");
@@ -87,5 +101,40 @@ namespace WebDeveloper.Areas.Personal.Controllers
                 return RedirectToRoute("Personal_default");
             return PartialView("_Delete", person);
         }
+
+
+        public ActionResult Upload()
+        {
+            return PartialView("_FileUpload");
+        }
+
+        [HttpPost]
+        [OutputCache(Duration = 0)]
+        public ActionResult UploadFile()
+        {
+            if (Request.Files.Count == 0) return PartialView("_FileUpload");
+            var file = Request.Files[0];
+            try
+            {
+                var folder = Server.MapPath("~/Files");
+                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
+                string path = Path.Combine(folder, Path.GetFileName(file.FileName));
+                file.SaveAs(path);
+            }
+            catch
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        #region Common Methods
+        private int TotalPages(int? size)
+        {
+            var rows = _personRepository.Count();
+            var totalPages = rows / size.Value;
+            return totalPages;
+        }
+        #endregion
     }
 }

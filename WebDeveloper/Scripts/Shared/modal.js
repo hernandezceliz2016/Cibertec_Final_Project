@@ -1,8 +1,4 @@
-﻿$(document).ready(function () {
-    $(".datepicker").datepicker();
-});
-
-function getModal(url) {
+﻿function getModal(url) {
     $.get(url, function (data) {
         $('.modal-body').html(data);        
     });
@@ -11,5 +7,6 @@ function getModal(url) {
 function closeModal()
 {     
     $("button[data-dismiss='modal']").click();
-    window.location.reload();
+    $('.modal-body').html('');
+    reloadPartial();
 }

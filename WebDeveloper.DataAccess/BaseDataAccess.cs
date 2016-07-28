@@ -40,6 +40,13 @@ namespace WebDeveloper.DataAccess
                 return dbContext.SaveChanges();
             }
         }
+        public int Count()
+        {
+            using (var dbContext = new WebContextDb())
+            {
+                return dbContext.Set<T>().Count();
+            }
+        }
 
     }
 }

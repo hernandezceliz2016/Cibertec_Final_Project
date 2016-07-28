@@ -16,7 +16,7 @@ namespace WebDeveloper.Areas.Personal
 
             context.MapRoute(
                 "Address_default",
-                "{controller}/{action}/{id}",
+                "Address/{action}/{id}",
                 new { controller = "Address", action = "Index", id = UrlParameter.Optional }
             );
 
